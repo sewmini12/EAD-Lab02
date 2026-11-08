@@ -1,14 +1,20 @@
 package lk.ac.mrt.fit.library_api.controller; 
-  
+
 import java.util.List; 
-  
+
 import jakarta.validation.Valid; 
 import lk.ac.mrt.fit.library_api.model.Book; 
 import lk.ac.mrt.fit.library_api.service.BookService; 
 import org.springframework.http.HttpStatus; 
 import org.springframework.http.ResponseEntity; 
 import org.springframework.web.bind.annotation.*; 
+
+// New Swagger / OpenAPI Imports
+import io.swagger.v3.oas.annotations.Operation; 
+import io.swagger.v3.oas.annotations.responses.ApiResponse; 
+import io.swagger.v3.oas.annotations.tags.Tag; 
   
+@Tag(name = "Books", description = "Create, read, update and delete books") 
 @RestController 
 @RequestMapping("/api/books") 
 public class BookController { 
@@ -18,7 +24,8 @@ public class BookController {
     public BookController(BookService bookService) { 
         this.bookService = bookService; 
     }
-     @GetMapping 
+
+    @GetMapping 
     public List<Book> getAllBooks() { 
         return bookService.getAllBooks(); 
     } 
@@ -30,6 +37,10 @@ public class BookController {
                 .orElse(ResponseEntity.notFound().build()); 
     } 
   
+    @Operation(summary = "Create a book", 
+               description = "Adds a book and returns it with its new id.") 
+    @ApiResponse(responseCode = "201", description = "Book created") 
+    @ApiResponse(responseCode = "400", description = "Invalid input") 
     @PostMapping 
     public ResponseEntity<Book> createBook(@Valid @RequestBody Book book) { 
         return ResponseEntity.status(HttpStatus.CREATED) 
